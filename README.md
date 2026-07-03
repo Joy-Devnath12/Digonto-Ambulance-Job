@@ -1,4 +1,4 @@
-# 🚑 Digonto Ambulance Job
+# 🚑 dg EMS Job
 
 **dg_emsjob** — Advanced EMS / ambulance job for FiveM with a fully integrated death and medical system.
 
@@ -20,6 +20,7 @@ Originally based on the excellent [Arius Ambulance Job](https://github.com/Arius
 - 📦 Multi-inventory compatibility
 - 🎯 Optional target system support
 - ⚡ Optimized and lightweight
+- ⚡ Discord Weebhook For Duty.
 
 ---
 
