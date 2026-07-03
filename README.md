@@ -20,6 +20,7 @@ Originally based on the excellent [Arius Ambulance Job](https://github.com/Arius
 - 📦 Multi-inventory compatibility
 - 🎯 Optional target system support
 - ⚡ Optimized and lightweight
+- ⚡ Discord Weebhook For Duty.
 
 ---
 
