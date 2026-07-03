@@ -40,6 +40,7 @@ end
 
 function hasJob(target, jobs)
     local xPlayer = QBCore.Functions.GetPlayer(target)
+    if not xPlayer or not xPlayer.PlayerData.job.onduty then return false end
 
     if type(jobs) == "table" then
         for index, jobName in pairs(jobs) do
@@ -103,3 +104,11 @@ QBCore.Functions.CreateUseableItem('emstablet', function(source)
 
     TriggerClientEvent('dg_emsjob:useEmsTablet', source)
 end)
+
+function toggleDuty(target)
+    local xPlayer = QBCore.Functions.GetPlayer(target)
+    if not xPlayer then return nil end
+    local newDuty = not xPlayer.PlayerData.job.onduty
+    xPlayer.Functions.SetJobDuty(newDuty)
+    return newDuty, xPlayer.PlayerData.job.name
+end

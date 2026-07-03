@@ -87,3 +87,25 @@ CreateThread(function()
         TriggerEvent('esx_society:registerSociety', v, v, 'society_' .. v, 'society_' .. v, 'society_' .. v, { type = 'public' })
     end
 end)
+
+function toggleDuty(target)
+    local xPlayer = ESX.GetPlayerFromId(target)
+    if not xPlayer then return nil end
+    local currentJob = xPlayer.job.name
+    local currentGrade = xPlayer.job.grade
+
+    local isOffDuty = string.sub(currentJob, 1, 3) == "off"
+    local newJob
+    local onDutyState
+
+    if isOffDuty then
+        newJob = string.sub(currentJob, 4)
+        onDutyState = true
+    else
+        newJob = "off" .. currentJob
+        onDutyState = false
+    end
+
+    xPlayer.setJob(newJob, currentGrade)
+    return onDutyState, newJob
+end

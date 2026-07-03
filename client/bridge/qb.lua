@@ -150,6 +150,7 @@ end
 
 function hasJob(jobs)
     local playerData = QBCore.Functions.GetPlayerData()
+    if not playerData or not playerData.job or not playerData.job.onduty then return false end
 
     if type(jobs) == "table" then
         for index, jobName in pairs(jobs) do

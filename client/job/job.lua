@@ -384,3 +384,26 @@ RegisterNetEvent("dg_emsjob:createDistressCall", function(name)
     })
     PlaySound(-1, "Event_Start_Text", "GTAO_FM_Events_Soundset")
 end)
+
+CreateThread(function()
+    while not addBoxZone do Wait(100) end
+    if not Config.Duty or not Config.Duty.enable then return end
+
+    local groups = {}
+    for i = 1, #Config.EmsJobs do
+        local job = Config.EmsJobs[i]
+        groups[#groups + 1] = job
+        groups[#groups + 1] = "off" .. job
+    end
+
+    addBoxZone(Config.Duty.pos, {
+        {
+            label = locale('toggle_duty') or "Toggle Duty",
+            icon = Config.Duty.icon or "fa-solid fa-clipboard-user",
+            groups = groups,
+            fn = function()
+                TriggerServerEvent('dg_emsjob:toggleDuty')
+            end
+        }
+    })
+end)

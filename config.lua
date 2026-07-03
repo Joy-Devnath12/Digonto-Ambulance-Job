@@ -3,6 +3,13 @@ lib.locale()
 Config                         = {}
 
 Config.Debug                   = false
+Config.DutyWebhook             = "YOUR_WEBHOOK_URL_HERE" -- Discord Webhook URL for EMS Duty Logger
+
+Config.Duty = {
+	enable = true,
+	pos = vec3(317.28, -582.30, 43.06),
+	icon = "fa-solid fa-clipboard-user"
+}
 
 Config.Inventory               = 'auto'                -- 'auto' | 'ox' | 'qb'
 

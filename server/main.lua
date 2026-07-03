@@ -220,3 +220,89 @@ AddEventHandler('onServerResourceStart', function(resourceName)
     end
 end)
 
+local dutyStartTimes = {}
+
+local function sendWebhook(embed)
+    local webhook = Config.DutyWebhook
+    if not webhook or webhook == "" or webhook == "YOUR_WEBHOOK_URL_HERE" then return end
+
+    PerformHttpRequest(webhook, function(statusCode, response, headers)
+        if statusCode ~= 200 and statusCode ~= 204 then
+            print(("^1[dg_emsjob] Discord Webhook failed with status code %s^0"):format(statusCode))
+        end
+    end, 'POST', json.encode({
+        embeds = { embed }
+    }), { ['Content-Type'] = 'application/json' })
+end
+
+local function sendOnDutyWebhook(source, name)
+    local embed = {
+        title = "EMS Duty Update",
+        description = ("**%s** is now **On Duty**."):format(name),
+        color = 3066993, -- Green
+        fields = {
+            { name = "Player Name", value = name, inline = true },
+            { name = "Server ID", value = tostring(source), inline = true },
+            { name = "Time", value = os.date("%Y-%m-%d %H:%M:%S"), inline = false }
+        },
+        footer = { text = "dg_emsjob Duty Logger" }
+    }
+    sendWebhook(embed)
+end
+
+local function sendOffDutyWebhook(source, name, startTime)
+    local durationStr = "Unknown"
+    if startTime then
+        local durationSec = os.time() - startTime
+        local hours = math.floor(durationSec / 3600)
+        local minutes = math.floor((durationSec % 3600) / 60)
+        local seconds = durationSec % 60
+        durationStr = string.format("%dh %dm %ds", hours, minutes, seconds)
+    end
+
+    local embed = {
+        title = "EMS Duty Update",
+        description = ("**%s** is now **Off Duty**."):format(name),
+        color = 15158332, -- Red
+        fields = {
+            { name = "Player Name", value = name, inline = true },
+            { name = "Server ID", value = tostring(source), inline = true },
+            { name = "Time", value = os.date("%Y-%m-%d %H:%M:%S"), inline = false },
+            { name = "Session Duration", value = durationStr, inline = false }
+        },
+        footer = { text = "dg_emsjob Duty Logger" }
+    }
+    sendWebhook(embed)
+end
+
+RegisterNetEvent('dg_emsjob:toggleDuty', function()
+    local source = source
+    if toggleDuty then
+        local onDuty, jobName = toggleDuty(source)
+        if onDuty ~= nil then
+            local name = getPlayerName(source)
+            if onDuty then
+                dutyStartTimes[source] = os.time()
+                TriggerClientEvent('dg_emsjob:showNotification', source, "You are now ON Duty", "success")
+                sendOnDutyWebhook(source, name)
+            else
+                local startTime = dutyStartTimes[source]
+                TriggerClientEvent('dg_emsjob:showNotification', source, "You are now OFF Duty", "error")
+                sendOffDutyWebhook(source, name, startTime)
+                dutyStartTimes[source] = nil
+            end
+        else
+            TriggerClientEvent('dg_emsjob:showNotification', source, "Failed to toggle duty status", "error")
+        end
+    end
+end)
+
+AddEventHandler('playerDropped', function(reason)
+    local source = source
+    if dutyStartTimes[source] then
+        local name = getPlayerName(source)
+        sendOffDutyWebhook(source, name, dutyStartTimes[source])
+        dutyStartTimes[source] = nil
+    end
+end)
+
