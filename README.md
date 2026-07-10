@@ -176,7 +176,7 @@ dg_emsjob/
 
 | Redesign & Improvements | dg |
 | Additional Contributions | SWGAURKO |
-```| Original Script | Arius Scripts |```
+| Original Script | Detective / Arius Scripts |
 
 ---
 
